@@ -1,35 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+import './App.css';
+// import Spotify from '../util/Spotify';
+import SearchBar from './search/search';
+import SongContainer from './Playlist/Playlist';
 
 function App() {
-  const [count, setCount] = useState(0)
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+  const [songList, setSongs] = useState([])
+  const [playlistTitle, setPlaylistTitle] = useState('Playlist Title')
+
+  const addSongHandler = (song) => {
+      if (song['name'] !== "..." && !songList.some(songs => songs.url === song.url)) {
+      setSongs((prev) => [...prev, song])}
+      console.log(songList)
+  }
+
+  const handleTitle = (e) => {
+    setPlaylistTitle(e.target.value)
+  }
+  
+  const removeSong = (songUrl) => {
+    console.log('remove')
+    setSongs((prev) => prev.filter(song => song.url !== songUrl))
+  }
+
+  return(
+    <div className='app'>
+      <h1>Jammer</h1>
+      <div className="main" id="app">
+        <SearchBar addSongHandler={addSongHandler} className="section"/> 
+
+        <div id="playlist" className="section">
+          <input id="playlistTitle" onChange={handleTitle} value={playlistTitle}/>
+          <ul>
+              {songList.map((song) => (
+                <SongContainer 
+                song={song} removeSong={removeSong}
+              />))}
+          </ul>
+          <button className='createButton'>Create Playlist</button>
+
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+
+
+
+
+
+
+    </div>
   )
 }
 
-export default App
+export default App;
